@@ -1,0 +1,103 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const domains = [
+  {
+    num: "01",
+    name: "Clinical Probability of Success",
+    desc: "We read the trial the way a reviewer would, not the way a deck does. That means stress-testing the endpoint, the comparator, and the population against what's actually moved the needle in similar programs — so you know if the data being promised is plausible, optimistic, or unsupported.",
+    tags: ["Endpoint & Trial Design Review", "Comparator / Historical Benchmarking", "Regulatory Pathway Read (RMAT, PRIME, Accelerated Approval)", "Enrollment Feasibility", "Competitor Read-Through", "Catalyst Timeline Sanity Check"],
+  },
+  {
+    num: "02",
+    name: "Technical Feasibility",
+    desc: "Good biology doesn't always mean a manufacturable, scalable product. We look at the vector or editing platform, the process behind it, and the safety signal honestly — flagging the difference between a real technical edge and a slide that sounds impressive.",
+    tags: ["Vector / Platform Plausibility", "Manufacturing & CMC Scalability", "Process & Analytical Risk", "Durability of Effect", "Safety Signal Read", "Freedom-to-Operate Flags"],
+  },
+  {
+    num: "03",
+    name: "Financial & Commercial Outlook",
+    desc: "A scientific win isn't automatically a financial one. We size the real addressable population, pressure-test pricing and reimbursement against payer reality, and map the capital actually required to get from where the company is today to an approval that matters.",
+    tags: ["Addressable Population Sizing", "Pricing & Reimbursement Reality", "Capital Runway vs. Milestones", "Pipeline & Competitive Crowding", "Catalyst Realism", "Partnership / M&A Optionality"],
+  },
+];
+
+const formats = [
+  { title: "Single-Name Deep Dive", desc: "A full clinical, technical, and financial read on one asset or company ahead of a position, a catalyst, or an LP decision." },
+  { title: "Pre-Deal / Crossover Screen", desc: "A faster, focused read timed to a financing round, IPO window, or PIPE — built for a decision that can't wait for a full diligence cycle." },
+  { title: "Portfolio Monitoring", desc: "Ongoing coverage of CGT names already in a book, with flags raised as new data, regulatory action, or competitive news changes the picture." },
+  { title: "Expert Call / Second Opinion", desc: "A direct conversation to pressure-test a thesis, a sell-side note, or management's framing before a decision is finalized." },
+];
+---
+<Layout title="Capabilities">
+  <!-- HERO -->
+  <section class="px-6 lg:px-10 pt-16 pb-14 lg:pt-20 border-b border-[var(--color-hairline)]">
+    <div class="mx-auto max-w-[1200px] grid lg:grid-cols-[1fr_1.2fr] gap-12 items-end">
+      <div>
+        <div class="eyebrow mb-4"><span class="kicker-line"></span>Capabilities</div>
+        <h1 class="font-display text-[clamp(2.1rem,3.4vw,3rem)] text-[var(--color-ink)] leading-[1.15]">
+          Diligence built around<br/>the decision in front of you.
+        </h1>
+      </div>
+      <p class="text-[15px] text-[var(--color-ink-dim)] font-light leading-[1.85]">
+        Cell &amp; gene therapy investing requires reading clinical, technical, and financial signals
+        at once — and most generalist coverage isn't built to do all three credibly. Our work is
+        organized around the three questions that actually determine whether a position works:
+        will the trial succeed, can the science and manufacturing actually deliver it, and does the
+        commercial math hold up.
+      </p>
+    </div>
+  </section>
+
+  <!-- DOMAINS -->
+  <section class="px-6 lg:px-10 py-20">
+    <div class="mx-auto max-w-[1200px] flex flex-col gap-5">
+      {domains.map((d) => (
+        <div class="glass rounded-[6px] grid lg:grid-cols-[280px_1fr] overflow-hidden">
+          <div class="p-8 border-b lg:border-b-0 lg:border-r border-[var(--color-hairline)] flex flex-col">
+            <div class="font-mono text-[10px] tracking-[0.15em] text-[var(--color-signal)] mb-3">{d.num}</div>
+            <div class="font-display text-[1.35rem] text-[var(--color-ink)] leading-[1.25]">{d.name}</div>
+          </div>
+          <div class="p-8 flex flex-col gap-5">
+            <p class="text-[14px] text-[var(--color-ink-dim)] font-light leading-[1.8]">{d.desc}</p>
+            <div class="flex flex-wrap gap-2">
+              {d.tags.map((t) => (
+                <span class="font-mono text-[10px] tracking-[0.04em] text-[var(--color-ink-dim)] bg-white/[0.04] border border-[var(--color-hairline)] px-3 py-1.5 rounded-[3px]">{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ENGAGEMENT FORMATS -->
+  <section class="px-6 lg:px-10 py-20 border-t border-[var(--color-hairline)] bg-[var(--color-void)]/60">
+    <div class="mx-auto max-w-[1200px]">
+      <div class="eyebrow mb-4"><span class="kicker-line"></span>How We Engage</div>
+      <h2 class="font-display text-[clamp(1.8rem,2.6vw,2.4rem)] text-[var(--color-ink)] mb-12 leading-[1.2]">Formats that match how you actually invest.</h2>
+      <div class="grid md:grid-cols-2 gap-5">
+        {formats.map((f) => (
+          <div class="glass glass-hover rounded-[6px] p-7">
+            <h3 class="font-display text-[1.15rem] text-[var(--color-ink)] mb-2.5">{f.title}</h3>
+            <p class="text-[13.5px] text-[var(--color-ink-dim)] font-light leading-[1.7]">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="px-6 lg:px-10 py-24 text-center">
+    <div class="mx-auto max-w-[600px]">
+      <div class="eyebrow mb-4 justify-center flex"><span class="kicker-line"></span>Get Started</div>
+      <h2 class="font-display text-[clamp(1.6rem,2.6vw,2.1rem)] text-[var(--color-ink)] mb-4 leading-[1.3]">Ready for an independent read?</h2>
+      <p class="text-[14.5px] text-[var(--color-ink-dim)] font-light leading-[1.8] mb-8">
+        Tell us about the asset and the decision ahead. We'll follow up within one business day.
+      </p>
+      <a href="/contact" class="inline-block font-mono text-[11px] tracking-[0.12em] uppercase px-8 py-4 rounded-[3px] bg-[var(--color-signal)] text-[#04211c] font-medium hover:brightness-110 transition">
+        Request a Briefing
+      </a>
+    </div>
+  </section>
+</Layout>

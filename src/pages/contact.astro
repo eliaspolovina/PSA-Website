@@ -1,0 +1,163 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// TODO(setup): Sign up at https://formspree.io using elias.polovina@polovinascientific.com,
+// create a form, and replace YOUR_FORM_ID below with the ID Formspree gives you
+// (looks like https://formspree.io/f/abcd1234). Until then this form will not deliver email.
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+
+const engagementTypes = [
+  "Single-Name Deep Dive",
+  "Pre-Deal / Crossover Screen",
+  "Portfolio Monitoring",
+  "Expert Call / Second Opinion",
+  "Not Sure Yet",
+];
+---
+<Layout title="Contact">
+  <section class="px-6 lg:px-10 py-16 lg:py-20">
+    <div class="mx-auto max-w-[1200px] grid lg:grid-cols-[1fr_1.2fr] gap-16 items-start">
+      <!-- INFO -->
+      <div class="lg:sticky lg:top-28">
+        <div class="eyebrow mb-5"><span class="kicker-line"></span>Contact</div>
+        <h1 class="font-display text-[clamp(2rem,3.4vw,2.9rem)] text-[var(--color-ink)] leading-[1.2] mb-6">
+          Let's talk about <em class="italic text-[var(--color-ink-dim)]">your position.</em>
+        </h1>
+        <p class="text-[14.5px] text-[var(--color-ink-dim)] font-light leading-[1.85] mb-10 max-w-[420px]">
+          Tell us about the asset or company you're evaluating and the decision in front of you.
+          All inquiries are confidential, and we'll respond within one business day.
+        </p>
+
+        <div class="flex flex-col gap-6">
+          <div class="flex gap-4 items-start">
+            <div class="w-9 h-9 rounded-[3px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-[var(--color-signal)] fill-none" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <div class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-faint)] mb-1">Email</div>
+              <a href="mailto:elias.polovina@polovinascientific.com" class="text-[14px] text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors">elias.polovina@polovinascientific.com</a>
+            </div>
+          </div>
+          <div class="flex gap-4 items-start">
+            <div class="w-9 h-9 rounded-[3px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-[var(--color-signal)] fill-none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+            </div>
+            <div>
+              <div class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-faint)] mb-1">Response Time</div>
+              <div class="text-[14px] text-[var(--color-ink)]">Within 1 business day</div>
+            </div>
+          </div>
+          <div class="flex gap-4 items-start">
+            <div class="w-9 h-9 rounded-[3px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-[var(--color-signal)] fill-none" stroke-width="1.5"><path d="M12 15a4 4 0 100-8 4 4 0 000 8z"/><path d="M19.4 13a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V19a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V4a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H20a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </div>
+            <div>
+              <div class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-faint)] mb-1">Confidentiality</div>
+              <div class="text-[14px] text-[var(--color-ink)]">NDA available on request</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div>
+        <div class="glass rounded-[8px] p-8 lg:p-10" id="contact-form-wrap">
+          <h2 class="font-display text-[1.3rem] text-[var(--color-ink)] mb-7">Tell us about the situation</h2>
+
+          <form id="contact-form" action={FORMSPREE_ENDPOINT} method="POST" class="flex flex-col gap-5">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">First Name</label>
+                <input required type="text" name="first_name" placeholder="First" class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Last Name</label>
+                <input required type="text" name="last_name" placeholder="Last" class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Fund / Organization</label>
+              <input required type="text" name="organization" placeholder="Fund or firm name" class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Email Address</label>
+              <input required type="email" name="email" placeholder="you@fund.com" class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Type of Engagement</label>
+              <select
+                name="engagement_type"
+                class="appearance-none bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 pr-10 text-[14px] text-[var(--color-ink)] outline-none focus:border-[var(--color-signal-line)] transition-colors bg-no-repeat"
+                style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%239bacc9' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E&quot;); background-position: right 14px center;"
+              >
+                <option value="" disabled selected>Select an option</option>
+                {engagementTypes.map((t) => <option value={t}>{t}</option>)}
+              </select>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Asset, Company, or Ticker</label>
+              <input type="text" name="asset" placeholder="What are you evaluating?" class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-dim)]">Details</label>
+              <textarea required name="message" rows="4" placeholder="Modality, stage, timeline, and the decision you're trying to make. All inquiries are treated as strictly confidential." class="bg-white/[0.03] border border-[var(--color-hairline)] rounded-[3px] px-4 py-2.5 text-[14px] text-[var(--color-ink)] placeholder:text-[var(--color-ink-faint)] outline-none focus:border-[var(--color-signal-line)] transition-colors resize-vertical"></textarea>
+            </div>
+
+            <input type="hidden" name="_subject" value="New diligence inquiry — Polovina Scientific" />
+
+            <button type="submit" class="mt-2 font-mono text-[11px] tracking-[0.12em] uppercase px-7 py-3.5 rounded-[3px] bg-[var(--color-signal)] text-[#04211c] font-medium hover:brightness-110 transition">
+              Submit Inquiry
+            </button>
+            <p id="form-error" class="hidden text-[12.5px] text-[var(--color-amber)] leading-relaxed">
+              Something went wrong sending this. Please email
+              <a href="mailto:elias.polovina@polovinascientific.com" class="underline">elias.polovina@polovinascientific.com</a> directly.
+            </p>
+            <p class="text-[12px] text-[var(--color-ink-faint)] leading-relaxed">
+              All details are treated in strict confidence, under NDA if requested. We do not share inquiry information with third parties.
+            </p>
+          </form>
+        </div>
+
+        <div class="hidden glass rounded-[8px] p-10 text-center" id="form-success">
+          <div class="w-14 h-14 rounded-full bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center mx-auto mb-5">
+            <svg viewBox="0 0 24 24" class="w-6 h-6 stroke-[var(--color-signal)] fill-none" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
+          </div>
+          <h3 class="font-display text-[1.3rem] text-[var(--color-ink)] mb-2">Inquiry received</h3>
+          <p class="text-[14px] text-[var(--color-ink-dim)] font-light">Thank you for reaching out — we'll be in touch within one business day.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const wrap = document.getElementById("contact-form-wrap");
+  const success = document.getElementById("form-success");
+  const errorMsg = document.getElementById("form-error");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorMsg?.classList.add("hidden");
+    try {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        wrap?.classList.add("hidden");
+        success?.classList.remove("hidden");
+      } else {
+        errorMsg?.classList.remove("hidden");
+      }
+    } catch {
+      errorMsg?.classList.remove("hidden");
+    }
+  });
+</script>

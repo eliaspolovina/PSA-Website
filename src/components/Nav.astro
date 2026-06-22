@@ -1,0 +1,41 @@
+---
+import Mark from "./Mark.astro";
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/capabilities", label: "Capabilities" },
+  { href: "/about", label: "About" },
+];
+const isActive = (href: string) => path === href.replace(/\/$/, "") || (href !== "/" && path.startsWith(href));
+---
+<header class="fixed top-0 inset-x-0 z-50 border-b border-[var(--color-hairline)] bg-[var(--color-abyss)]/85 backdrop-blur-xl">
+  <nav class="mx-auto max-w-[1200px] h-[72px] px-6 lg:px-10 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3 group">
+      <Mark size={32} class="transition-transform duration-500 group-hover:rotate-90" />
+      <span class="flex flex-col leading-[1.05]">
+        <span class="font-display text-[15px] tracking-wide text-[var(--color-ink)]">Polovina Scientific</span>
+        <span class="font-mono text-[8.5px] tracking-[0.24em] uppercase text-[var(--color-ink-faint)]">Investment Diligence</span>
+      </span>
+    </a>
+
+    <ul class="hidden md:flex items-center gap-9">
+      {links.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            class:list={[
+              "font-mono text-[11px] tracking-[0.14em] uppercase transition-colors",
+              isActive(l.href) ? "text-[var(--color-signal)]" : "text-[var(--color-ink-dim)] hover:text-[var(--color-ink)]",
+            ]}
+          >{l.label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <a
+      href="/contact"
+      class="font-mono text-[11px] tracking-[0.14em] uppercase px-5 py-2.5 rounded-[3px] border border-[var(--color-signal-line)] text-[var(--color-signal)] hover:bg-[var(--color-signal-soft)] transition-colors"
+    >Request a Briefing</a>
+  </nav>
+</header>

@@ -1,0 +1,126 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const values = [
+  {
+    name: "Independent, Conflict-Free Read",
+    desc: "We don't take board seats, advisory equity, or stakes in companies we cover. Our assessment is built solely on the science and the data in front of us — not on a relationship to protect.",
+  },
+  {
+    name: "Scientific Rigor",
+    desc: "Every read is grounded in mechanism, regulatory precedent, and what agencies have actually required of comparable programs — not press-release optimism.",
+  },
+  {
+    name: "Plain-Language Communication",
+    desc: "An investment committee shouldn't need a PhD to use our findings. We translate the science into clear, decision-ready language without losing what matters.",
+  },
+  {
+    name: "Honest Risk Communication",
+    desc: "Cell and gene therapy carries real scientific and regulatory uncertainty. We say so plainly — even when it complicates the thesis.",
+  },
+];
+---
+<Layout title="About">
+  <!-- HERO -->
+  <section class="px-6 lg:px-10 pt-16 pb-16 lg:pt-20 border-b border-[var(--color-hairline)]">
+    <div class="mx-auto max-w-[860px]">
+      <div class="eyebrow mb-5"><span class="kicker-line"></span>About</div>
+      <h1 class="font-display text-[clamp(2.1rem,3.6vw,3.1rem)] text-[var(--color-ink)] leading-[1.18] mb-7">
+        An independent second opinion, <em class="italic text-[var(--color-ink-dim)]">built from inside the science.</em>
+      </h1>
+      <p class="text-[15.5px] text-[var(--color-ink-dim)] font-light leading-[1.85]">
+        Cell &amp; gene therapy investing sits at an unusual intersection: the science is genuinely
+        novel, the regulatory record is still being written, and the people best positioned to
+        evaluate both are rarely the people advising capital allocators. Polovina Scientific
+        Advisory exists to close that gap.
+      </p>
+    </div>
+  </section>
+
+  <!-- MISSION -->
+  <section class="px-6 lg:px-10 py-16">
+    <div class="mx-auto max-w-[860px]">
+      <div class="glass rounded-[6px] border-l-2 border-l-[var(--color-signal)] p-8 mb-16">
+        <p class="font-display italic text-[1.15rem] text-[var(--color-ink)] leading-[1.7]">
+          "Our mission is to give hedge funds and venture investors the same first-principles
+          scientific and regulatory scrutiny a company's own advisors would apply — turned
+          outward, in service of the capital deciding whether to back it."
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-14">
+        <div>
+          <div class="eyebrow mb-4"><span class="kicker-line"></span>Our Story</div>
+          <h2 class="font-display text-[1.6rem] text-[var(--color-ink)] mb-5 leading-[1.3]">Why this exists</h2>
+          <div class="flex flex-col gap-4 text-[14px] text-[var(--color-ink-dim)] font-light leading-[1.85]">
+            <p>
+              Most diligence available to investors in this space is either written for
+              scientists, or written by people without the scientific and regulatory background
+              to know which risks actually matter. Polovina Scientific Advisory was built to sit
+              in between — translating frontier biology and regulatory nuance into a read a
+              generalist investment committee can act on.
+            </p>
+            <p class="text-[var(--color-ink-faint)] italic">
+              [Add a paragraph here on the founding story — what prompted you to start this firm,
+              and any specific experience or background worth highlighting to investors.]
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <div class="eyebrow mb-4"><span class="kicker-line"></span>What We Stand For</div>
+          <h2 class="font-display text-[1.6rem] text-[var(--color-ink)] mb-6 leading-[1.3]">Our values</h2>
+          <div class="flex flex-col gap-5">
+            {values.map((v, i) => (
+              <div class:list={["pb-5", i < values.length - 1 && "border-b border-[var(--color-hairline)]"]}>
+                <div class="font-display text-[1.02rem] text-[var(--color-ink)] mb-1.5">{v.name}</div>
+                <p class="text-[13.5px] text-[var(--color-ink-dim)] font-light leading-[1.7]">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider mx-6 lg:mx-10 border-t border-[var(--color-hairline)]"></div>
+
+  <!-- FOUNDER -->
+  <section class="px-6 lg:px-10 py-20">
+    <div class="mx-auto max-w-[860px]">
+      <div class="eyebrow mb-4"><span class="kicker-line"></span>Leadership</div>
+      <h2 class="font-display text-[1.6rem] text-[var(--color-ink)] mb-8 leading-[1.3]">Founder &amp; Principal</h2>
+
+      <div class="glass rounded-[6px] p-8 flex flex-col sm:flex-row gap-7">
+        <div class="w-16 h-16 rounded-full bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center font-display text-[1.4rem] text-[var(--color-signal)] flex-shrink-0">
+          EP
+        </div>
+        <div>
+          <div class="font-display text-[1.2rem] text-[var(--color-ink)] mb-1">Elias Polovina</div>
+          <div class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-faint)] mb-4">Founder &amp; Principal</div>
+          <p class="text-[14px] text-[var(--color-ink-dim)] font-light leading-[1.8] mb-3">
+            Elias Polovina founded Polovina Scientific Advisory to give investors an independent,
+            science-first read on cell &amp; gene therapy assets — the kind of scrutiny typically
+            reserved for a company's own scientific advisors, made available to the people
+            deciding whether to back it.
+          </p>
+          <p class="text-[13.5px] text-[var(--color-ink-faint)] italic leading-[1.8]">
+            [Add background here: relevant prior roles, institutions, scientific or regulatory
+            experience, and years of focus on cell &amp; gene therapy — written for an investor
+            audience.]
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="px-6 lg:px-10 py-20 text-center border-t border-[var(--color-hairline)]">
+    <div class="mx-auto max-w-[600px]">
+      <h2 class="font-display text-[clamp(1.6rem,2.6vw,2.1rem)] text-[var(--color-ink)] mb-4 leading-[1.3]">Let's talk about your next position.</h2>
+      <a href="/contact" class="inline-block font-mono text-[11px] tracking-[0.12em] uppercase px-8 py-4 rounded-[3px] bg-[var(--color-signal)] text-[#04211c] font-medium hover:brightness-110 transition">
+        Request a Briefing
+      </a>
+    </div>
+  </section>
+</Layout>

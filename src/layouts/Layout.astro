@@ -1,0 +1,47 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = "Independent scientific and financial diligence on cell & gene therapy assets for hedge funds and venture capital.",
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} · Polovina Scientific</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Hanken+Grotesk:wght@300;400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="relative min-h-screen overflow-x-hidden">
+    <!-- ambient background, fixed behind all page content -->
+    <div class="fixed inset-0 -z-10">
+      <div class="absolute inset-0 bg-[var(--color-abyss)]"></div>
+      <div class="absolute inset-0 field-grid"></div>
+      <div class="glow-orb w-[560px] h-[560px] bg-[var(--color-signal)]/[0.07] -top-40 -right-40"></div>
+      <div class="glow-orb w-[480px] h-[480px] bg-[var(--color-amber)]/[0.045] top-[60vh] -left-32"></div>
+      <div class="field-noise"></div>
+    </div>
+
+    <Nav />
+    <main class="relative pt-[72px]">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

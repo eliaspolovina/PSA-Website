@@ -25,6 +25,10 @@ Tell the user:
 
 Wait for the user to supply the form ID before continuing.
 
+Validate the ID shape before editing:
+- Accept pattern: `^[a-z0-9]{8}$` (example: `xpwzabcd`).
+- If it fails this pattern, ask the user to copy the ID again from Formspree.
+
 ## Step 2 — replace the placeholder
 
 Open `src/pages/contact.astro`. The placeholder is near the top of the frontmatter block:
@@ -44,12 +48,29 @@ the fetch in the `<script>`, and the `_subject` hidden field are all already wir
 
 ## Step 3 — verify the endpoint is live
 
-Run a quick curl to confirm Formspree responds to the endpoint before deploying:
+Run a quick request to confirm Formspree responds to the endpoint before deploying.
+
+### macOS/Linux (bash)
+
 ```bash
+REAL_ID="<REAL_ID>"
 curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST https://formspree.io/f/<REAL_ID> \
+  -X POST "https://formspree.io/f/$REAL_ID" \
   -H "Accept: application/json" \
   -d "email=test@test.com&message=ping"
+```
+
+### Windows (PowerShell)
+
+```powershell
+$realId = "<REAL_ID>"
+$resp = Invoke-WebRequest -UseBasicParsing `
+  -Method POST `
+  -Uri "https://formspree.io/f/$realId" `
+  -Headers @{ Accept = "application/json" } `
+  -Body @{ email = "test@test.com"; message = "ping" } `
+  -ContentType "application/x-www-form-urlencoded"
+$resp.StatusCode
 ```
 Expected response: `200`. A `404` means the form ID doesn't exist yet — confirm the user
 completed step 1 fully (Formspree requires email verification before a form is active).
@@ -74,3 +95,10 @@ Remind the user to log into Formspree and configure:
 - **Redirect URL** — leave blank; the form uses the JSON/AJAX path (the `Accept: application/json`
   header) so Formspree won't redirect; it returns JSON and the page handles the success state
   itself.
+
+## Definition of done
+
+- `FORMSPREE_ENDPOINT` uses a real `https://formspree.io/f/<id>` value.
+- Endpoint returns `200` to a test POST.
+- Local contact form submit shows the success panel and sends email to
+  `elias.polovina@polovinascientific.com`.

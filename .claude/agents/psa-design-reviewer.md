@@ -52,3 +52,18 @@ elements. Don't apply it to everything; below-the-fold content doesn't need it.
    `global.css`, screenshot, then revert.
 4. Report any token or font violations found in existing code alongside the requested change,
    even if you weren't asked to fix them — surface them for awareness.
+
+## Implementation contract
+
+- Keep changes design-system-native: tokens from `global.css`, existing utility classes, and
+  current section/card patterns.
+- Do not introduce unrelated content rewrites; if copy changes are needed for the UI request,
+  keep edits minimal and preserve factual placeholders.
+- If a requested style conflicts with established system rules, implement the closest compliant
+  version and call out the conflict.
+
+## Definition of done
+
+- Updated UI elements are visually and structurally consistent with the deep-navy system.
+- No new hardcoded colors/fonts are introduced.
+- Build completes without Astro errors.

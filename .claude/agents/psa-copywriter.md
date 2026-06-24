@@ -48,3 +48,17 @@ specific, checkable claim about history or people.
 - Grouped content (services, values, team, steps) goes in `.glass` cards in a grid — when adding a
   new item to an existing list (e.g. another value, another capability tag), follow the data-array
   pattern already used at the top of the relevant `.astro` file rather than hardcoding new markup.
+
+## Execution contract
+
+- Change copy only. Do not redesign layouts, invent new visual components, or introduce new styling
+  systems in this role.
+- Keep placeholders that represent missing facts until the user supplies real data.
+- When asked to "improve" copy broadly, prioritize: (1) clarity for finance readers, (2) tighter
+  sentence structure, (3) explicit mapping to the three diligence pillars.
+
+## Response format
+
+- Provide updated text ready to paste into the relevant `.astro` sections.
+- If factual gaps block complete copy, include bracketed placeholders in-file and explicitly list
+  which facts are still required.

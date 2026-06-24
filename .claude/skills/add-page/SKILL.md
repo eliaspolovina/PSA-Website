@@ -5,6 +5,11 @@ description: Scaffold a new Astro page on the Polovina Scientific site with the 
 
 Scaffold a new page for the Polovina Scientific Astro site. Follow these steps in order.
 
+## 0. Pre-check route collisions
+
+- Confirm `src/pages/<slug>.astro` does not already exist.
+- If it exists, treat the task as an edit/refactor request, not scaffolding.
+
 ## 1. Confirm the slug and title
 
 Ask (or infer from context):
@@ -77,3 +82,10 @@ Run `npm run build` and confirm the new route appears in the generated routes li
 ```
 ├─ /your-new-slug/index.html
 ```
+
+## Definition of done
+
+- New route file exists and renders inside `Layout`.
+- Nav/Footer are wired only if the page is intended to be publicly listed.
+- The page uses existing PSA spacing, token, and typography conventions.
+- Build succeeds with the new route present in output.

@@ -4,28 +4,31 @@ import Layout from "../layouts/Layout.astro";
 const domains = [
   {
     num: "01",
+    icon: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7"><circle cx="14" cy="14" r="9" stroke="currentColor" stroke-width="1.2"/><path d="M14 8v6l4 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="14" cy="14" r="2" fill="currentColor" opacity="0.3"/></svg>`,
     name: "Clinical Probability of Success",
-    desc: "We read the trial the way a reviewer would, not the way a deck does. That means stress-testing the endpoint, the comparator, and the population against what's actually moved the needle in similar programs — so you know if the data being promised is plausible, optimistic, or unsupported.",
-    tags: ["Endpoint & Trial Design Review", "Comparator / Historical Benchmarking", "Regulatory Pathway Read (RMAT, PRIME, Accelerated Approval)", "Enrollment Feasibility", "Competitor Read-Through", "Catalyst Timeline Sanity Check"],
+    summary: "Independent read on whether a trial is designed to succeed — or to impress.",
+    tags: ["Endpoint & Trial Design", "Regulatory Pathway", "Competitor Read-Through", "Catalyst Timeline", "Enrollment Feasibility", "Historical Benchmarking"],
   },
   {
     num: "02",
+    icon: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7"><rect x="5" y="5" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M9 14h10M9 10h6M9 18h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
     name: "Technical Feasibility",
-    desc: "Good biology doesn't always mean a manufacturable, scalable product. We look at the vector or editing platform, the process behind it, and the safety signal honestly — flagging the difference between a real technical edge and a slide that sounds impressive.",
-    tags: ["Vector / Platform Plausibility", "Manufacturing & CMC Scalability", "Process & Analytical Risk", "Durability of Effect", "Safety Signal Read", "Freedom-to-Operate Flags"],
+    summary: "Whether the science and manufacturing can actually deliver what the deck promises.",
+    tags: ["Platform Plausibility", "CMC & Scalability", "Safety Signal Read", "Durability of Effect", "Process Risk", "Freedom-to-Operate"],
   },
   {
     num: "03",
+    icon: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7"><path d="M6 20l5-6 4 3 5-9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="22" cy="8" r="2" fill="currentColor" opacity="0.5"/></svg>`,
     name: "Financial & Commercial Outlook",
-    desc: "A scientific win isn't automatically a financial one. We size the real addressable population, pressure-test pricing and reimbursement against payer reality, and map the capital actually required to get from where the company is today to an approval that matters.",
-    tags: ["Addressable Population Sizing", "Pricing & Reimbursement Reality", "Capital Runway vs. Milestones", "Pipeline & Competitive Crowding", "Catalyst Realism", "Partnership / M&A Optionality"],
+    summary: "A scientific win is not automatically a financial one. We size the real math.",
+    tags: ["Population Sizing", "Pricing & Reimbursement", "Capital Runway", "Competitive Crowding", "Catalyst Realism", "M&A Optionality"],
   },
 ];
 
 const formats = [
-  { title: "Single-Name Deep Dive", desc: "A full clinical, technical, and financial read on one asset or company ahead of a position, a catalyst, or an LP decision." },
-  { title: "Pre-Deal / Crossover Screen", desc: "A faster, focused read timed to a financing round, IPO window, or PIPE — built for a decision that can't wait for a full diligence cycle." },
-  { title: "Portfolio Monitoring", desc: "Ongoing coverage of CGT names already in a book, with flags raised as new data, regulatory action, or competitive news changes the picture." },
+  { title: "Single-Name Deep Dive", desc: "A full clinical, technical, and financial read on one asset or company ahead of a position, catalyst, or LP decision." },
+  { title: "Pre-Deal / Crossover Screen", desc: "A faster, focused read timed to a financing round, IPO window, or PIPE — built for a decision that can't wait." },
+  { title: "Portfolio Monitoring", desc: "Ongoing coverage of names already in a book, with flags raised as new data or regulatory action changes the picture." },
   { title: "Expert Call / Second Opinion", desc: "A direct conversation to pressure-test a thesis, a sell-side note, or management's framing before a decision is finalized." },
 ];
 ---
@@ -40,31 +43,31 @@ const formats = [
         </h1>
       </div>
       <p class="text-[15px] text-[var(--color-ink-dim)] font-light leading-[1.85]">
-        Cell &amp; gene therapy investing requires reading clinical, technical, and financial signals
-        at once — and most generalist coverage isn't built to do all three credibly. Our work is
-        organized around the three questions that actually determine whether a position works:
-        will the trial succeed, can the science and manufacturing actually deliver it, and does the
-        commercial math hold up.
+        Biotechnology investing demands reading clinical, technical, and financial signals simultaneously.
+        Our work is organized around the three questions that actually determine whether a position works.
       </p>
     </div>
   </section>
 
-  <!-- DOMAINS -->
+  <!-- DOMAINS — card grid, minimal text -->
   <section class="px-6 lg:px-10 py-20">
-    <div class="mx-auto max-w-[1200px] flex flex-col gap-5">
+    <div class="mx-auto max-w-[1200px] grid md:grid-cols-3 gap-4">
       {domains.map((d) => (
-        <div class="glass rounded-[6px] grid lg:grid-cols-[280px_1fr] overflow-hidden">
-          <div class="p-8 border-b lg:border-b-0 lg:border-r border-[var(--color-hairline)] flex flex-col">
-            <div class="font-mono text-[10px] tracking-[0.15em] text-[var(--color-signal)] mb-3">{d.num}</div>
-            <div class="font-display text-[1.35rem] text-[var(--color-ink)] leading-[1.25]">{d.name}</div>
-          </div>
-          <div class="p-8 flex flex-col gap-5">
-            <p class="text-[14px] text-[var(--color-ink-dim)] font-light leading-[1.8]">{d.desc}</p>
-            <div class="flex flex-wrap gap-2">
-              {d.tags.map((t) => (
-                <span class="font-mono text-[10px] tracking-[0.04em] text-[var(--color-ink-dim)] bg-white/[0.04] border border-[var(--color-hairline)] px-3 py-1.5 rounded-[3px]">{t}</span>
-              ))}
+        <div class="glass rounded-[6px] p-8 flex flex-col gap-6 group hover:border-[var(--color-signal-line)] transition-colors">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-[4px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center text-[var(--color-signal)]">
+              <Fragment set:html={d.icon} />
             </div>
+            <span class="font-mono text-[10px] tracking-[0.15em] text-[var(--color-ink-faint)]">{d.num}</span>
+          </div>
+          <div>
+            <h3 class="font-display text-[1.2rem] text-[var(--color-ink)] leading-[1.25] mb-2">{d.name}</h3>
+            <p class="text-[13.5px] text-[var(--color-ink-dim)] font-light leading-[1.7]">{d.summary}</p>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-[var(--color-hairline)]">
+            {d.tags.map((t) => (
+              <span class="font-mono text-[9.5px] tracking-[0.04em] text-[var(--color-ink-faint)] bg-white/[0.03] border border-[var(--color-hairline)] px-2.5 py-1 rounded-[3px]">{t}</span>
+            ))}
           </div>
         </div>
       ))}
@@ -76,10 +79,10 @@ const formats = [
     <div class="mx-auto max-w-[1200px]">
       <div class="eyebrow mb-4"><span class="kicker-line"></span>How We Engage</div>
       <h2 class="font-display text-[clamp(1.8rem,2.6vw,2.4rem)] text-[var(--color-ink)] mb-12 leading-[1.2]">Formats that match how you actually invest.</h2>
-      <div class="grid md:grid-cols-2 gap-5">
+      <div class="grid md:grid-cols-2 gap-4">
         {formats.map((f) => (
           <div class="glass glass-hover rounded-[6px] p-7">
-            <h3 class="font-display text-[1.15rem] text-[var(--color-ink)] mb-2.5">{f.title}</h3>
+            <h3 class="font-display text-[1.1rem] text-[var(--color-ink)] mb-2">{f.title}</h3>
             <p class="text-[13.5px] text-[var(--color-ink-dim)] font-light leading-[1.7]">{f.desc}</p>
           </div>
         ))}

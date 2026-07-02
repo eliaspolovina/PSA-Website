@@ -1,9 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// TODO(setup): Sign up at https://formspree.io using elias.polovina@polovinascientific.com,
-// create a form, and replace YOUR_FORM_ID below with the ID Formspree gives you
-// (looks like https://formspree.io/f/abcd1234). Until then this form will not deliver email.
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
 
 const engagementTypes = [
@@ -29,15 +26,6 @@ const engagementTypes = [
         </p>
 
         <div class="flex flex-col gap-6">
-          <div class="flex gap-4 items-start">
-            <div class="w-9 h-9 rounded-[3px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-[var(--color-signal)] fill-none" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <div>
-              <div class="font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--color-ink-faint)] mb-1">Email</div>
-              <a href="mailto:elias.polovina@polovinascientific.com" class="text-[14px] text-[var(--color-ink)] hover:text-[var(--color-signal)] transition-colors">elias.polovina@polovinascientific.com</a>
-            </div>
-          </div>
           <div class="flex gap-4 items-start">
             <div class="w-9 h-9 rounded-[3px] bg-[var(--color-signal-soft)] border border-[var(--color-signal-line)] flex items-center justify-center flex-shrink-0">
               <svg viewBox="0 0 24 24" class="w-4 h-4 stroke-[var(--color-signal)] fill-none" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
@@ -114,11 +102,10 @@ const engagementTypes = [
               Submit Inquiry
             </button>
             <p id="form-error" class="hidden text-[12.5px] text-[var(--color-amber)] leading-relaxed">
-              Something went wrong sending this. Please email
-              <a href="mailto:elias.polovina@polovinascientific.com" class="underline">elias.polovina@polovinascientific.com</a> directly.
+              Something went wrong. Please try again or reach out directly.
             </p>
             <p class="text-[12px] text-[var(--color-ink-faint)] leading-relaxed">
-              All details are treated in strict confidence, under NDA if requested. We do not share inquiry information with third parties.
+              All details are treated in strict confidence, under NDA if requested.
             </p>
           </form>
         </div>

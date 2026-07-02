@@ -1,0 +1,62 @@
+---
+// Biotechnology therapeutics ticker — static illustrative data
+// Replace with a live API (e.g. Polygon.io, Alpaca) when ready
+const tickers = [
+  { sym: "REGN",  name: "Regeneron",         price: "792.14", change: "+4.32",  pct: "+0.55%" },
+  { sym: "VRTX",  name: "Vertex Pharma",      price: "461.08", change: "+2.17",  pct: "+0.47%" },
+  { sym: "MRNA",  name: "Moderna",            price: "74.52",  change: "-1.38",  pct: "-1.82%" },
+  { sym: "BMRN",  name: "BioMarin",           price: "68.91",  change: "+0.84",  pct: "+1.23%" },
+  { sym: "BLUE",  name: "bluebird bio",       price: "3.12",   change: "-0.09",  pct: "-2.81%" },
+  { sym: "CRSP",  name: "CRISPR Therapeutics",price: "41.27",  change: "+1.63",  pct: "+4.11%" },
+  { sym: "EDIT",  name: "Editas Medicine",    price: "5.08",   change: "-0.21",  pct: "-3.97%" },
+  { sym: "NTLA",  name: "Intellia",           price: "18.44",  change: "+0.92",  pct: "+5.25%" },
+  { sym: "BEAM",  name: "Beam Therapeutics",  price: "22.67",  change: "+0.55",  pct: "+2.49%" },
+  { sym: "RARE",  name: "Ultragenyx",         price: "34.19",  change: "-0.63",  pct: "-1.81%" },
+  { sym: "FATE",  name: "Fate Therapeutics",  price: "5.44",   change: "+0.18",  pct: "+3.42%" },
+  { sym: "SANA",  name: "Sana Biotechnology", price: "2.87",   change: "-0.04",  pct: "-1.37%" },
+  { sym: "ALNY",  name: "Alnylam",            price: "248.33", change: "+3.11",  pct: "+1.27%" },
+  { sym: "IONS",  name: "Ionis Pharma",       price: "44.76",  change: "+0.29",  pct: "+0.65%" },
+  { sym: "SRPT",  name: "Sarepta",            price: "82.05",  change: "-2.44",  pct: "-2.89%" },
+  { sym: "ONCE",  name: "Spark Therapeutics", price: "—",      change: "—",      pct: "—"      },
+  { sym: "RCKT",  name: "Rocket Pharma",      price: "7.33",   change: "+0.41",  pct: "+5.93%" },
+  { sym: "ACAD",  name: "ACADIA Pharma",      price: "16.82",  change: "-0.37",  pct: "-2.15%" },
+  { sym: "PTGX",  name: "Protagonist Therap.",price: "54.61",  change: "+1.82",  pct: "+3.45%" },
+  { sym: "KYMR",  name: "Kymera Therap.",     price: "39.44",  change: "+0.73",  pct: "+1.88%" },
+];
+---
+
+<div class="ticker-outer w-full overflow-hidden border-y border-[var(--color-hairline)] bg-[var(--color-void)] py-2.5 relative">
+  <!-- fade edges -->
+  <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-16 z-10" style="background: linear-gradient(to right, var(--color-void), transparent)"></div>
+  <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-16 z-10" style="background: linear-gradient(to left, var(--color-void), transparent)"></div>
+
+  <div class="ticker-track flex gap-0 whitespace-nowrap" style="width: max-content">
+    <!-- duplicated for seamless loop -->
+    {[...tickers, ...tickers].map((t) => {
+      const up = t.change.startsWith("+");
+      const flat = t.change === "—";
+      const color = flat ? "var(--color-ink-faint)" : up ? "var(--color-signal)" : "#f87171";
+      return (
+        <span class="inline-flex items-center gap-2.5 px-6 border-r border-[var(--color-hairline)]">
+          <span class="font-mono text-[11px] tracking-[0.1em] font-medium" style={`color: var(--color-ink)`}>{t.sym}</span>
+          <span class="font-mono text-[10px] text-[var(--color-ink-faint)] hidden sm:inline">{t.name}</span>
+          <span class="font-mono text-[11px]" style={`color: ${color}`}>{t.price}</span>
+          <span class="font-mono text-[10px]" style={`color: ${color}`}>{t.pct}</span>
+        </span>
+      );
+    })}
+  </div>
+</div>
+
+<style>
+  .ticker-track {
+    animation: ticker-scroll 55s linear infinite;
+  }
+  .ticker-outer:hover .ticker-track {
+    animation-play-state: paused;
+  }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>

@@ -1,0 +1,201 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const categories = ["All", "Regulatory", "M&A", "Clinical", "Industry"];
+
+const news = [
+  {
+    category: "Regulatory",
+    date: "June 2025",
+    headline: "FDA Grants Accelerated Approval to Alnylam's Vutrisiran for ATTR-CM",
+    summary: "The FDA expanded vutrisiran's label to include transthyretin-mediated amyloid cardiomyopathy, marking the second siRNA therapy approved for a cardiac indication and reinforcing RNA interference as a platform with broad organ-system applicability.",
+    tags: ["RNA Interference", "FDA", "Cardiomyopathy"],
+  },
+  {
+    category: "M&A",
+    date: "May 2025",
+    headline: "Novartis Acquires Molecular Partners for $1.1B, Betting on DARPin Platform",
+    summary: "The deal gives Novartis access to Molecular Partners' designed ankyrin repeat protein technology, which has shown differentiated binding profiles across oncology and ophthalmology targets. The transaction represents a platform acquisition rather than a single-asset bet.",
+    tags: ["Acquisition", "Oncology", "Platform Technology"],
+  },
+  {
+    category: "Clinical",
+    date: "May 2025",
+    headline: "Protagonist Therapeutics' Rusfertide Meets Primary Endpoint in Phase 3 Polycythemia Vera Trial",
+    summary: "REVIVE trial data showed rusfertide, a hepcidin mimetic, achieved hematocrit control in over 60% of patients versus placebo. The result positions Protagonist for an NDA filing and validates the peptide-based approach to iron regulation in myeloproliferative disorders.",
+    tags: ["Hematology", "Phase 3", "NDA"],
+  },
+  {
+    category: "Regulatory",
+    date: "April 2025",
+    headline: "EMA Grants PRIME Designation to Beam Therapeutics' Base Editing Program in Sickle Cell Disease",
+    summary: "The designation accelerates regulatory interaction for BEAM-101, which uses adenine base editing to reactivate fetal hemoglobin without creating double-strand DNA breaks. PRIME status signals EMA's recognition of the unmet need and the program's mechanistic differentiation from existing approved therapies.",
+    tags: ["Base Editing", "EMA", "Rare Disease"],
+  },
+  {
+    category: "M&A",
+    date: "April 2025",
+    headline: "Regeneron Acquires 23andMe's Therapeutics Assets Out of Bankruptcy for $256M",
+    summary: "Regeneron secured access to 23andMe's proprietary genotype-phenotype dataset — one of the largest consumer genomics databases in existence — along with its drug discovery pipeline. The acquisition strengthens Regeneron's genetics-driven target identification capabilities at a significant discount to the dataset's estimated replacement cost.",
+    tags: ["Genomics", "Data Assets", "Acquisition"],
+  },
+  {
+    category: "Industry",
+    date: "March 2025",
+    headline: "NIH Institutes Sweeping Changes to Indirect Cost Rate Policy for Research Grants",
+    summary: "New NIH guidance caps indirect cost reimbursement rates at 15% for most research institutions, down from rates that averaged 27–30% at major academic medical centers. The policy shift is expected to constrain academic research capacity and may accelerate the migration of early-stage drug discovery from academia to industry-sponsored settings.",
+    tags: ["NIH", "Research Policy", "Funding"],
+  },
+  {
+    category: "Clinical",
+    date: "March 2025",
+    headline: "Intellia's In Vivo CRISPR Therapy Shows Durable Efficacy at 3 Years in Transthyretin Amyloidosis",
+    summary: "Long-term follow-up data from the NTLA-2001 program demonstrated sustained TTR knockdown exceeding 90% at 36 months with no new safety signals. The durability data meaningfully de-risks the one-time dosing model central to Intellia's commercial thesis and strengthens the case for in vivo genome editing as a therapeutic modality.",
+    tags: ["CRISPR", "Long-term Follow-up", "Gene Editing"],
+  },
+  {
+    category: "Regulatory",
+    date: "February 2025",
+    headline: "FDA Approves Sarepta's SRP-9003 for Limb-Girdle Muscular Dystrophy Type 2E",
+    summary: "The approval of the AAV-delivered micro-beta-sarcoglycan gene therapy marks the fourth rare neuromuscular disease to receive gene therapy approval in the US. The accelerated approval was based on functional protein expression, with a confirmatory trial ongoing.",
+    tags: ["AAV Gene Therapy", "Rare Disease", "Neuromuscular"],
+  },
+  {
+    category: "Industry",
+    date: "February 2025",
+    headline: "JPMorgan Healthcare Conference: Biotech CEOs Signal Pivot Toward Profitability Over Pipeline Expansion",
+    summary: "A recurring theme across presentations at the 2025 JPMorgan Healthcare Conference was capital discipline — with management teams emphasizing path to cash-flow breakeven over traditional pipeline breadth metrics. The shift reflects sustained pressure from crossover investors and signals a potential recalibration of how therapeutic biotechs are valued by public markets.",
+    tags: ["Capital Markets", "Investor Sentiment", "JPMorgan"],
+  },
+  {
+    category: "M&A",
+    date: "January 2025",
+    headline: "Johnson & Johnson Closes $14.6B Acquisition of Intra-Cellular Therapies",
+    summary: "The acquisition of Intra-Cellular, maker of Caplyta (lumateperone) for depression and bipolar disorder, represents one of the largest CNS deals in recent memory. J&J gains a commercially launched asset with expanding indications and a pipeline of next-generation CNS compounds, reinforcing the sector's appetite for late-stage de-risked assets.",
+    tags: ["CNS", "Commercial Stage", "Large-Cap M&A"],
+  },
+  {
+    category: "Clinical",
+    date: "January 2025",
+    headline: "Kymera Therapeutics Reports First Clinical Evidence of Targeted Protein Degradation in Oncology",
+    summary: "Phase 1 data from KT-413, a IRAK4 degrader in B-cell malignancies, showed tumor responses in patients who had progressed on prior targeted therapies. The result provides the first clinical proof-of-concept for the protein degrader modality in hematologic cancers and validates the mechanistic distinction from kinase inhibition.",
+    tags: ["Protein Degradation", "Oncology", "Phase 1"],
+  },
+  {
+    category: "Regulatory",
+    date: "December 2024",
+    headline: "FDA Releases Final Guidance on Human Gene Therapy Products for Rare Diseases",
+    summary: "Updated guidance clarifies expectations for long-term follow-up studies, manufacturing comparability during scale-up, and the use of surrogate endpoints in accelerated approval applications. The document reflects lessons from the first wave of approved gene therapies and provides clearer regulatory direction for programs currently in IND-enabling stages.",
+    tags: ["FDA Guidance", "Gene Therapy", "Regulatory Clarity"],
+  },
+];
+---
+<Layout title="Biotech News">
+  <!-- HERO -->
+  <section class="px-6 lg:px-10 pt-16 pb-14 lg:pt-20 border-b border-[var(--color-hairline)]">
+    <div class="mx-auto max-w-[1200px]">
+      <div class="eyebrow mb-5"><span class="kicker-line"></span>Biotech News</div>
+      <div class="grid lg:grid-cols-[1fr_1.4fr] gap-10 items-end">
+        <h1 class="font-display text-[clamp(2rem,3.4vw,2.9rem)] text-[var(--color-ink)] leading-[1.15]">
+          Regulatory milestones, acquisitions, and industry developments.
+        </h1>
+        <p class="text-[15px] text-[var(--color-ink-dim)] font-light leading-[1.85]">
+          A curated record of significant events shaping the biotechnology landscape —
+          regulatory decisions, major transactions, and clinical data that move the field.
+          Annotated with context relevant to investors evaluating therapeutic assets.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER TABS -->
+  <section class="px-6 lg:px-10 py-6 border-b border-[var(--color-hairline)] bg-[var(--color-void)]/40 sticky top-[72px] z-40 backdrop-blur-md">
+    <div class="mx-auto max-w-[1200px] flex gap-3 flex-wrap">
+      {categories.map((cat) => (
+        <button
+          class="filter-btn font-mono text-[10px] tracking-[0.12em] uppercase px-4 py-2 rounded-[3px] border border-[var(--color-hairline)] text-[var(--color-ink-faint)] hover:border-[var(--color-signal-line)] hover:text-[var(--color-signal)] transition-colors"
+          data-category={cat}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+  </section>
+
+  <!-- NEWS FEED -->
+  <section class="px-6 lg:px-10 py-14">
+    <div class="mx-auto max-w-[1200px] flex flex-col gap-4" id="news-feed">
+      {news.map((item) => (
+        <article
+          class="news-item glass glass-hover rounded-[6px] p-7 grid lg:grid-cols-[160px_1fr] gap-6"
+          data-category={item.category}
+        >
+          <div class="flex flex-col gap-2">
+            <span class="font-mono text-[9.5px] tracking-[0.14em] uppercase px-2.5 py-1 rounded-[3px] border w-fit"
+              style={
+                item.category === "Regulatory" ? "color:#34e0c4;border-color:rgba(52,224,196,0.3);background:rgba(52,224,196,0.05)" :
+                item.category === "M&A"         ? "color:#f3a953;border-color:rgba(243,169,83,0.3);background:rgba(243,169,83,0.05)" :
+                item.category === "Clinical"    ? "color:#9bacc9;border-color:rgba(155,172,201,0.3);background:rgba(155,172,201,0.05)" :
+                                                  "color:var(--color-ink-faint);border-color:var(--color-hairline);background:transparent"
+              }
+            >
+              {item.category}
+            </span>
+            <span class="font-mono text-[10px] text-[var(--color-ink-faint)] tracking-wide">{item.date}</span>
+          </div>
+          <div>
+            <h2 class="font-display text-[1.15rem] text-[var(--color-ink)] leading-[1.3] mb-3">{item.headline}</h2>
+            <p class="text-[13.5px] text-[var(--color-ink-dim)] font-light leading-[1.75] mb-4">{item.summary}</p>
+            <div class="flex flex-wrap gap-2">
+              {item.tags.map((tag) => (
+                <span class="font-mono text-[9.5px] tracking-[0.06em] text-[var(--color-ink-faint)] border border-[var(--color-hairline)] px-2.5 py-1 rounded-[3px]">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section class="px-6 lg:px-10 pb-16">
+    <div class="mx-auto max-w-[1200px]">
+      <p class="text-[12px] text-[var(--color-ink-faint)] leading-relaxed max-w-[700px]">
+        Content is compiled for informational purposes and reflects publicly available information.
+        Summaries represent editorial interpretation and do not constitute investment advice.
+        Polovina Scientific Advisory has no material relationship with any companies referenced.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const buttons = document.querySelectorAll(".filter-btn");
+  const items   = document.querySelectorAll(".news-item") as NodeListOf<HTMLElement>;
+
+  // Set "All" as active by default
+  buttons[0]?.classList.add("border-[var(--color-signal-line)]", "text-[var(--color-signal)]");
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cat = (btn as HTMLElement).dataset.category!;
+
+      // Update active state
+      buttons.forEach((b) => {
+        b.classList.remove("border-[var(--color-signal-line)]", "text-[var(--color-signal)]");
+        b.classList.add("border-[var(--color-hairline)]", "text-[var(--color-ink-faint)]");
+      });
+      btn.classList.add("border-[var(--color-signal-line)]", "text-[var(--color-signal)]");
+      btn.classList.remove("border-[var(--color-hairline)]", "text-[var(--color-ink-faint)]");
+
+      // Filter items
+      items.forEach((item) => {
+        if (cat === "All" || item.dataset.category === cat) {
+          item.style.display = "";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    });
+  });
+</script>

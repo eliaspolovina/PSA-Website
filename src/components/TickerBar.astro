@@ -4,14 +4,10 @@ const SYMBOLS = [
   { sym: "VRTX",  name: "Vertex Pharma"       },
   { sym: "MRNA",  name: "Moderna"             },
   { sym: "BMRN",  name: "BioMarin"            },
-  { sym: "BLUE",  name: "bluebird bio"        },
   { sym: "CRSP",  name: "CRISPR Therapeutics" },
-  { sym: "EDIT",  name: "Editas Medicine"     },
   { sym: "NTLA",  name: "Intellia"            },
   { sym: "BEAM",  name: "Beam Therapeutics"   },
   { sym: "RARE",  name: "Ultragenyx"          },
-  { sym: "FATE",  name: "Fate Therapeutics"   },
-  { sym: "SANA",  name: "Sana Biotechnology"  },
   { sym: "ALNY",  name: "Alnylam"             },
   { sym: "IONS",  name: "Ionis Pharma"        },
   { sym: "SRPT",  name: "Sarepta"             },
@@ -25,110 +21,74 @@ const nameMap = JSON.stringify(Object.fromEntries(SYMBOLS.map(s => [s.sym, s.nam
 ---
 
 <div class="ticker-outer w-full overflow-hidden border-y border-[var(--color-hairline)] bg-[var(--color-void)] py-2.5 relative" data-names={nameMap}>
-  <!-- fade edges -->
   <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-16 z-10"
     style="background: linear-gradient(to right, var(--color-void), transparent)"></div>
   <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-16 z-10"
     style="background: linear-gradient(to left, var(--color-void), transparent)"></div>
 
-  <!-- placeholder shown while fetching -->
-  <div id="ticker-loading" class="ticker-track flex whitespace-nowrap" style="width: max-content">
+  <!-- single track — populated by JS -->
+  <div id="ticker-track" style="display:flex; width:max-content; white-space:nowrap; animation: ticker-scroll 90s linear infinite;">
     {[...SYMBOLS, ...SYMBOLS].map((t) => (
-      <span class="inline-flex items-center gap-2.5 px-6 border-r border-[var(--color-hairline)]">
-        <span class="font-mono text-[11px] tracking-[0.1em] font-medium text-[var(--color-ink)]">{t.sym}</span>
-        <span class="font-mono text-[10px] text-[var(--color-ink-faint)] hidden sm:inline">{t.name}</span>
-        <span class="font-mono text-[11px] text-[var(--color-ink-faint)]">—</span>
-        <span class="font-mono text-[10px] text-[var(--color-ink-faint)]">—</span>
+      <span style="display:inline-flex; align-items:center; gap:10px; padding:0 24px; border-right:1px solid rgba(151,196,214,0.14);">
+        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">{t.sym}</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)">{t.name}</span>
+        <span class="ticker-price" style="font-family:var(--font-mono);font-size:11px;color:var(--color-ink-faint)">—</span>
+        <span class="ticker-pct" style="font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)">—</span>
       </span>
     ))}
   </div>
-
-  <!-- live data injected here -->
-  <div id="ticker-live" class="ticker-track hidden whitespace-nowrap" style="width: max-content"></div>
 </div>
 
 <style>
-  .ticker-track {
-    display: flex;
-    animation: ticker-scroll 90s linear infinite;
-  }
-  .ticker-outer:hover .ticker-track {
-    animation-play-state: paused;
-  }
   @keyframes ticker-scroll {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
+  }
+  .ticker-outer:hover #ticker-track {
+    animation-play-state: paused;
   }
 </style>
 
 <script>
   (async () => {
-    const outer   = document.querySelector(".ticker-outer") as HTMLElement | null;
-    const loading = document.getElementById("ticker-loading");
-    const live    = document.getElementById("ticker-live");
-    if (!outer || !loading || !live) return;
+    const outer = document.querySelector(".ticker-outer") as HTMLElement | null;
+    const track = document.getElementById("ticker-track");
+    if (!outer || !track) return;
 
     const nameMap = JSON.parse(outer.dataset.names!) as Record<string, string>;
+    const syms    = Object.keys(nameMap);
     const green   = "#34e0c4";
     const red     = "#f87171";
     const faint   = "var(--color-ink-faint)";
 
-    try {
-      const res  = await fetch("/api/tickers");
-      const json = await res.json() as {
-        tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }>;
-      };
+    const applyData = (tickers: Array<{ sym: string; price: string; pct: string; up: boolean | null }>) => {
+      const dataMap = Object.fromEntries(tickers.map(t => [t.sym, t]));
+      // Update all price/pct spans in both copies of the track
+      const spans = track!.querySelectorAll("span[style*='display:inline-flex']");
+      let i = 0;
+      spans.forEach((span) => {
+        const sym  = syms[i % syms.length];
+        const d    = dataMap[sym];
+        const col  = d?.up === null || !d ? faint : d.up ? green : red;
+        const priceEl = span.querySelector(".ticker-price") as HTMLElement;
+        const pctEl   = span.querySelector(".ticker-pct")   as HTMLElement;
+        if (priceEl) { priceEl.textContent = d?.price ?? "—"; priceEl.style.color = col; }
+        if (pctEl)   { pctEl.textContent   = d?.pct   ?? "—"; pctEl.style.color   = col; }
+        i++;
+      });
+    };
 
-      if (!json.tickers?.length) return;
-
-      const dataMap = Object.fromEntries(json.tickers.map(t => [t.sym, t]));
-
-      const buildItems = () =>
-        Object.keys(nameMap).map(sym => {
-          const d   = dataMap[sym];
-          const col = d?.up === null || !d ? faint : d.up ? green : red;
-          return `
-            <span class="inline-flex items-center gap-2.5 px-6 border-r border-[rgba(151,196,214,0.14)]">
-              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">${sym}</span>
-              <span style="font-family:var(--font-mono);font-size:10px;color:${faint}" class="hidden sm:inline">${nameMap[sym]}</span>
-              <span style="font-family:var(--font-mono);font-size:11px;color:${col}">${d?.price ?? "—"}</span>
-              <span style="font-family:var(--font-mono);font-size:10px;color:${col}">${d?.pct ?? "—"}</span>
-            </span>`;
-        }).join("");
-
-      live.innerHTML = buildItems() + buildItems();
-      loading.classList.add("hidden");
-      live.classList.remove("hidden");
-
-    } catch (err) {
-      console.warn("Ticker: failed to load live data", err);
-    }
-
-    // Refresh every 60 seconds during market hours
-    setInterval(async () => {
+    const loadTickers = async () => {
       try {
         const res  = await fetch("/api/tickers");
-        const json = await res.json() as {
-          tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }>;
-        };
-        if (!json.tickers?.length) return;
+        const json = await res.json() as { tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }> };
+        if (json.tickers?.length) applyData(json.tickers);
+      } catch (err) {
+        console.warn("Ticker fetch failed:", err);
+      }
+    };
 
-        const dataMap = Object.fromEntries(json.tickers.map(t => [t.sym, t]));
-        const buildItems = () =>
-          Object.keys(nameMap).map(sym => {
-            const d   = dataMap[sym];
-            const col = d?.up === null || !d ? faint : d.up ? green : red;
-            return `
-              <span class="inline-flex items-center gap-2.5 px-6 border-r border-[rgba(151,196,214,0.14)]">
-                <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">${sym}</span>
-                <span style="font-family:var(--font-mono);font-size:10px;color:${faint}" class="hidden sm:inline">${nameMap[sym]}</span>
-                <span style="font-family:var(--font-mono);font-size:11px;color:${col}">${d?.price ?? "—"}</span>
-                <span style="font-family:var(--font-mono);font-size:10px;color:${col}">${d?.pct ?? "—"}</span>
-              </span>`;
-          }).join("");
-
-        live.innerHTML = buildItems() + buildItems();
-      } catch {}
-    }, 60_000);
+    await loadTickers();
+    setInterval(loadTickers, 60_000);
   })();
 </script>

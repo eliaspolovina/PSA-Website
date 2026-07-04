@@ -1,47 +1,38 @@
 ---
-// Ticker symbols — names are static, prices/changes fetched live from Polygon.io (Massive)
 const SYMBOLS = [
-  { sym: "REGN",  name: "Regeneron"          },
-  { sym: "VRTX",  name: "Vertex Pharma"      },
-  { sym: "MRNA",  name: "Moderna"            },
-  { sym: "BMRN",  name: "BioMarin"           },
-  { sym: "BLUE",  name: "bluebird bio"       },
-  { sym: "CRSP",  name: "CRISPR Therapeutics"},
-  { sym: "EDIT",  name: "Editas Medicine"    },
-  { sym: "NTLA",  name: "Intellia"           },
-  { sym: "BEAM",  name: "Beam Therapeutics"  },
-  { sym: "RARE",  name: "Ultragenyx"         },
-  { sym: "FATE",  name: "Fate Therapeutics"  },
-  { sym: "SANA",  name: "Sana Biotechnology" },
-  { sym: "ALNY",  name: "Alnylam"            },
-  { sym: "IONS",  name: "Ionis Pharma"       },
-  { sym: "SRPT",  name: "Sarepta"            },
-  { sym: "RCKT",  name: "Rocket Pharma"      },
-  { sym: "ACAD",  name: "ACADIA Pharma"      },
-  { sym: "PTGX",  name: "Protagonist Therap."},
-  { sym: "KYMR",  name: "Kymera Therap."     },
+  { sym: "REGN",  name: "Regeneron"           },
+  { sym: "VRTX",  name: "Vertex Pharma"       },
+  { sym: "MRNA",  name: "Moderna"             },
+  { sym: "BMRN",  name: "BioMarin"            },
+  { sym: "BLUE",  name: "bluebird bio"        },
+  { sym: "CRSP",  name: "CRISPR Therapeutics" },
+  { sym: "EDIT",  name: "Editas Medicine"     },
+  { sym: "NTLA",  name: "Intellia"            },
+  { sym: "BEAM",  name: "Beam Therapeutics"   },
+  { sym: "RARE",  name: "Ultragenyx"          },
+  { sym: "FATE",  name: "Fate Therapeutics"   },
+  { sym: "SANA",  name: "Sana Biotechnology"  },
+  { sym: "ALNY",  name: "Alnylam"             },
+  { sym: "IONS",  name: "Ionis Pharma"        },
+  { sym: "SRPT",  name: "Sarepta"             },
+  { sym: "RCKT",  name: "Rocket Pharma"       },
+  { sym: "ACAD",  name: "ACADIA Pharma"       },
+  { sym: "PTGX",  name: "Protagonist Therap." },
+  { sym: "KYMR",  name: "Kymera Therap."      },
 ];
 
-// Pass symbol list and API key to client-side script via data attributes
-const symbolList = SYMBOLS.map(s => s.sym).join(",");
 const nameMap = JSON.stringify(Object.fromEntries(SYMBOLS.map(s => [s.sym, s.name])));
-const API_KEY = "95XzbYI2nbs2ASsUWoSJglFyMtpGzkSE";
 ---
 
-<div
-  class="ticker-outer w-full overflow-hidden border-y border-[var(--color-hairline)] bg-[var(--color-void)] py-2.5 relative"
-  data-symbols={symbolList}
-  data-names={nameMap}
-  data-apikey={API_KEY}
->
+<div class="ticker-outer w-full overflow-hidden border-y border-[var(--color-hairline)] bg-[var(--color-void)] py-2.5 relative" data-names={nameMap}>
   <!-- fade edges -->
   <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-16 z-10"
     style="background: linear-gradient(to right, var(--color-void), transparent)"></div>
   <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-16 z-10"
     style="background: linear-gradient(to left, var(--color-void), transparent)"></div>
 
-  <!-- loading state -->
-  <div id="ticker-loading" class="ticker-track flex gap-0 whitespace-nowrap" style="width: max-content">
+  <!-- placeholder shown while fetching -->
+  <div id="ticker-loading" class="ticker-track flex whitespace-nowrap" style="width: max-content">
     {[...SYMBOLS, ...SYMBOLS].map((t) => (
       <span class="inline-flex items-center gap-2.5 px-6 border-r border-[var(--color-hairline)]">
         <span class="font-mono text-[11px] tracking-[0.1em] font-medium text-[var(--color-ink)]">{t.sym}</span>
@@ -53,11 +44,12 @@ const API_KEY = "95XzbYI2nbs2ASsUWoSJglFyMtpGzkSE";
   </div>
 
   <!-- live data injected here -->
-  <div id="ticker-live" class="ticker-track hidden flex gap-0 whitespace-nowrap" style="width: max-content"></div>
+  <div id="ticker-live" class="ticker-track hidden whitespace-nowrap" style="width: max-content"></div>
 </div>
 
 <style>
   .ticker-track {
+    display: flex;
     animation: ticker-scroll 90s linear infinite;
   }
   .ticker-outer:hover .ticker-track {
@@ -71,67 +63,72 @@ const API_KEY = "95XzbYI2nbs2ASsUWoSJglFyMtpGzkSE";
 
 <script>
   (async () => {
-    const outer   = document.querySelector(".ticker-outer") as HTMLElement;
+    const outer   = document.querySelector(".ticker-outer") as HTMLElement | null;
     const loading = document.getElementById("ticker-loading");
     const live    = document.getElementById("ticker-live");
     if (!outer || !loading || !live) return;
 
-    const symbols  = outer.dataset.symbols!.split(",");
-    const nameMap  = JSON.parse(outer.dataset.names!) as Record<string, string>;
-    const apiKey   = outer.dataset.apikey!;
-
-    // Polygon.io snapshot endpoint — previous close data (works on free tier)
-    const url = `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=${symbols.join(",")}&apiKey=${apiKey}`;
+    const nameMap = JSON.parse(outer.dataset.names!) as Record<string, string>;
+    const green   = "#34e0c4";
+    const red     = "#f87171";
+    const faint   = "var(--color-ink-faint)";
 
     try {
-      const res  = await fetch(url);
-      const json = await res.json();
+      const res  = await fetch("/api/tickers");
+      const json = await res.json() as {
+        tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }>;
+      };
 
-      if (!json.tickers || json.tickers.length === 0) return;
+      if (!json.tickers?.length) return;
 
-      // Build a map: SYM -> { price, change, pct }
-      const dataMap: Record<string, { price: string; change: string; pct: string }> = {};
-      for (const t of json.tickers) {
-        const close  = t.day?.c ?? t.prevDay?.c ?? null;
-        const open   = t.day?.o ?? t.prevDay?.o ?? null;
-        if (close === null) continue;
-        const chg    = open !== null ? close - open : 0;
-        const pct    = open ? (chg / open) * 100 : 0;
-        const up     = chg >= 0;
-        dataMap[t.ticker] = {
-          price:  `$${close.toFixed(2)}`,
-          change: `${up ? "+" : ""}${chg.toFixed(2)}`,
-          pct:    `${up ? "+" : ""}${pct.toFixed(2)}%`,
-        };
-      }
+      const dataMap = Object.fromEntries(json.tickers.map(t => [t.sym, t]));
 
-      // Build two copies of the track for seamless loop
-      const signalGreen = "#34e0c4";
-      const red         = "#f87171";
-      const faint       = "var(--color-ink-faint)";
-
-      const buildItems = () => symbols.map(sym => {
-        const d    = dataMap[sym];
-        const name = nameMap[sym] ?? sym;
-        const up   = d ? d.change.startsWith("+") : null;
-        const col  = d ? (up ? signalGreen : red) : faint;
-        return `
-          <span class="inline-flex items-center gap-2.5 px-6 border-r border-[var(--color-hairline)]">
-            <span class="font-mono text-[11px] tracking-[0.1em] font-medium" style="color:var(--color-ink)">${sym}</span>
-            <span class="font-mono text-[10px] hidden sm:inline" style="color:${faint}">${name}</span>
-            <span class="font-mono text-[11px]" style="color:${col}">${d ? d.price : "—"}</span>
-            <span class="font-mono text-[10px]" style="color:${col}">${d ? d.pct : "—"}</span>
-          </span>`;
-      }).join("");
+      const buildItems = () =>
+        Object.keys(nameMap).map(sym => {
+          const d   = dataMap[sym];
+          const col = d?.up === null || !d ? faint : d.up ? green : red;
+          return `
+            <span class="inline-flex items-center gap-2.5 px-6 border-r border-[rgba(151,196,214,0.14)]">
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">${sym}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:${faint}" class="hidden sm:inline">${nameMap[sym]}</span>
+              <span style="font-family:var(--font-mono);font-size:11px;color:${col}">${d?.price ?? "—"}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:${col}">${d?.pct ?? "—"}</span>
+            </span>`;
+        }).join("");
 
       live.innerHTML = buildItems() + buildItems();
-      live.classList.remove("hidden");
-      live.classList.add("flex");
       loading.classList.add("hidden");
+      live.classList.remove("hidden");
 
     } catch (err) {
-      console.warn("Ticker fetch failed, showing placeholder:", err);
-      // loading state remains visible as fallback
+      console.warn("Ticker: failed to load live data", err);
     }
+
+    // Refresh every 60 seconds during market hours
+    setInterval(async () => {
+      try {
+        const res  = await fetch("/api/tickers");
+        const json = await res.json() as {
+          tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }>;
+        };
+        if (!json.tickers?.length) return;
+
+        const dataMap = Object.fromEntries(json.tickers.map(t => [t.sym, t]));
+        const buildItems = () =>
+          Object.keys(nameMap).map(sym => {
+            const d   = dataMap[sym];
+            const col = d?.up === null || !d ? faint : d.up ? green : red;
+            return `
+              <span class="inline-flex items-center gap-2.5 px-6 border-r border-[rgba(151,196,214,0.14)]">
+                <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">${sym}</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:${faint}" class="hidden sm:inline">${nameMap[sym]}</span>
+                <span style="font-family:var(--font-mono);font-size:11px;color:${col}">${d?.price ?? "—"}</span>
+                <span style="font-family:var(--font-mono);font-size:10px;color:${col}">${d?.pct ?? "—"}</span>
+              </span>`;
+          }).join("");
+
+        live.innerHTML = buildItems() + buildItems();
+      } catch {}
+    }, 60_000);
   })();
 </script>

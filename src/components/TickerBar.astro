@@ -1,4 +1,5 @@
 ---
+// Symbols to display - trimmed to most liquid names for reliable data
 const SYMBOLS = [
   { sym: "REGN",  name: "Regeneron"           },
   { sym: "VRTX",  name: "Vertex Pharma"       },
@@ -17,78 +18,108 @@ const SYMBOLS = [
   { sym: "KYMR",  name: "Kymera Therap."      },
 ];
 
-const nameMap = JSON.stringify(Object.fromEntries(SYMBOLS.map(s => [s.sym, s.name])));
+// Fetch previous close at build time — server side, no CORS
+interface TickerItem {
+  sym: string;
+  name: string;
+  price: string;
+  pct: string;
+  up: boolean | null;
+}
+
+const API_KEY = "95XzbYI2nbs2ASsUWoSJglFyMtpGzkSE";
+
+const results: TickerItem[] = await Promise.all(
+  SYMBOLS.map(async ({ sym, name }) => {
+    try {
+      const res  = await fetch(`https://api.polygon.io/v2/aggs/ticker/${sym}/prev?adjusted=true&apiKey=${API_KEY}`);
+      const json = await res.json();
+      const r    = json.results?.[0];
+      if (!r) return { sym, name, price: "—", pct: "—", up: null };
+      const chg = r.c - r.o;
+      const pct = (chg / r.o) * 100;
+      return {
+        sym, name,
+        price: `$${r.c.toFixed(2)}`,
+        pct:   `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`,
+        up:    chg >= 0,
+      };
+    } catch {
+      return { sym, name, price: "—", pct: "—", up: null };
+    }
+  })
+);
+
+// Duplicate for seamless loop
+const items = [...results, ...results];
 ---
 
-<div class="ticker-outer w-full overflow-hidden border-y border-[var(--color-hairline)] bg-[var(--color-void)] py-2.5 relative" data-names={nameMap}>
-  <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-16 z-10"
-    style="background: linear-gradient(to right, var(--color-void), transparent)"></div>
-  <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-16 z-10"
-    style="background: linear-gradient(to left, var(--color-void), transparent)"></div>
-
-  <!-- single track — populated by JS -->
-  <div id="ticker-track" style="display:flex; width:max-content; white-space:nowrap; animation: ticker-scroll 90s linear infinite;">
-    {[...SYMBOLS, ...SYMBOLS].map((t) => (
-      <span style="display:inline-flex; align-items:center; gap:10px; padding:0 24px; border-right:1px solid rgba(151,196,214,0.14);">
-        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)">{t.sym}</span>
-        <span style="font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)">{t.name}</span>
-        <span class="ticker-price" style="font-family:var(--font-mono);font-size:11px;color:var(--color-ink-faint)">—</span>
-        <span class="ticker-pct" style="font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)">—</span>
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    {items.map((t) => (
+      <span class="ticker-item">
+        <span class="ticker-sym">{t.sym}</span>
+        <span class="ticker-name">{t.name}</span>
+        <span class="ticker-price" style={t.up === null ? "" : t.up ? "color:#34e0c4" : "color:#f87171"}>
+          {t.price}
+        </span>
+        <span class="ticker-pct" style={t.up === null ? "" : t.up ? "color:#34e0c4" : "color:#f87171"}>
+          {t.pct}
+        </span>
       </span>
     ))}
   </div>
 </div>
 
 <style>
-  @keyframes ticker-scroll {
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    border-top: 1px solid rgba(151,196,214,0.14);
+    border-bottom: 1px solid rgba(151,196,214,0.14);
+    background: var(--color-void);
+    padding: 10px 0;
+    position: relative;
+  }
+
+  .ticker-wrap::before,
+  .ticker-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 64px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .ticker-wrap::before { left: 0;  background: linear-gradient(to right, var(--color-void), transparent); }
+  .ticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--color-void), transparent); }
+
+  .ticker-inner {
+    display: inline-flex;
+    flex-direction: row;
+    white-space: nowrap;
+    animation: scroll 90s linear infinite;
+  }
+
+  .ticker-wrap:hover .ticker-inner {
+    animation-play-state: paused;
+  }
+
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 24px;
+    border-right: 1px solid rgba(151,196,214,0.14);
+  }
+
+  .ticker-sym  { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; font-weight: 500; color: var(--color-ink); }
+  .ticker-name { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
+  .ticker-price{ font-family: var(--font-mono); font-size: 11px; color: var(--color-ink-faint); }
+  .ticker-pct  { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
+
+  @keyframes scroll {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
   }
-  .ticker-outer:hover #ticker-track {
-    animation-play-state: paused;
-  }
 </style>
-
-<script>
-  (async () => {
-    const outer = document.querySelector(".ticker-outer") as HTMLElement | null;
-    const track = document.getElementById("ticker-track");
-    if (!outer || !track) return;
-
-    const nameMap = JSON.parse(outer.dataset.names!) as Record<string, string>;
-    const syms    = Object.keys(nameMap);
-    const green   = "#34e0c4";
-    const red     = "#f87171";
-    const faint   = "var(--color-ink-faint)";
-
-    const applyData = (tickers: Array<{ sym: string; price: string; pct: string; up: boolean | null }>) => {
-      const dataMap = Object.fromEntries(tickers.map(t => [t.sym, t]));
-      // Update all price/pct spans in both copies of the track
-      const spans = track!.querySelectorAll("span[style*='display:inline-flex']");
-      let i = 0;
-      spans.forEach((span) => {
-        const sym  = syms[i % syms.length];
-        const d    = dataMap[sym];
-        const col  = d?.up === null || !d ? faint : d.up ? green : red;
-        const priceEl = span.querySelector(".ticker-price") as HTMLElement;
-        const pctEl   = span.querySelector(".ticker-pct")   as HTMLElement;
-        if (priceEl) { priceEl.textContent = d?.price ?? "—"; priceEl.style.color = col; }
-        if (pctEl)   { pctEl.textContent   = d?.pct   ?? "—"; pctEl.style.color   = col; }
-        i++;
-      });
-    };
-
-    const loadTickers = async () => {
-      try {
-        const res  = await fetch("/api/tickers");
-        const json = await res.json() as { tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }> };
-        if (json.tickers?.length) applyData(json.tickers);
-      } catch (err) {
-        console.warn("Ticker fetch failed:", err);
-      }
-    };
-
-    await loadTickers();
-    setInterval(loadTickers, 60_000);
-  })();
-</script>

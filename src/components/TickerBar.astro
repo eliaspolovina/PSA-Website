@@ -1,125 +1,53 @@
 ---
-// Symbols to display - trimmed to most liquid names for reliable data
-const SYMBOLS = [
-  { sym: "REGN",  name: "Regeneron"           },
-  { sym: "VRTX",  name: "Vertex Pharma"       },
-  { sym: "MRNA",  name: "Moderna"             },
-  { sym: "BMRN",  name: "BioMarin"            },
-  { sym: "CRSP",  name: "CRISPR Therapeutics" },
-  { sym: "NTLA",  name: "Intellia"            },
-  { sym: "BEAM",  name: "Beam Therapeutics"   },
-  { sym: "RARE",  name: "Ultragenyx"          },
-  { sym: "ALNY",  name: "Alnylam"             },
-  { sym: "IONS",  name: "Ionis Pharma"        },
-  { sym: "SRPT",  name: "Sarepta"             },
-  { sym: "RCKT",  name: "Rocket Pharma"       },
-  { sym: "ACAD",  name: "ACADIA Pharma"       },
-  { sym: "PTGX",  name: "Protagonist Therap." },
-  { sym: "KYMR",  name: "Kymera Therap."      },
+// Static ticker — prices updated manually or via redeploy
+// Replace with live data once layout is confirmed working
+const tickers = [
+  { sym: "REGN",  name: "Regeneron",            price: "$792.14", pct: "+0.55%", up: true  },
+  { sym: "VRTX",  name: "Vertex Pharma",         price: "$461.08", pct: "+0.47%", up: true  },
+  { sym: "MRNA",  name: "Moderna",               price: "$74.52",  pct: "-1.82%", up: false },
+  { sym: "BMRN",  name: "BioMarin",              price: "$68.91",  pct: "+1.23%", up: true  },
+  { sym: "CRSP",  name: "CRISPR Therapeutics",   price: "$41.27",  pct: "+4.11%", up: true  },
+  { sym: "NTLA",  name: "Intellia",              price: "$18.44",  pct: "+5.25%", up: true  },
+  { sym: "BEAM",  name: "Beam Therapeutics",     price: "$22.67",  pct: "+2.49%", up: true  },
+  { sym: "RARE",  name: "Ultragenyx",            price: "$34.19",  pct: "-1.81%", up: false },
+  { sym: "ALNY",  name: "Alnylam",               price: "$248.33", pct: "+1.27%", up: true  },
+  { sym: "IONS",  name: "Ionis Pharma",          price: "$44.76",  pct: "+0.65%", up: true  },
+  { sym: "SRPT",  name: "Sarepta",               price: "$82.05",  pct: "-2.89%", up: false },
+  { sym: "RCKT",  name: "Rocket Pharma",         price: "$7.33",   pct: "+5.93%", up: true  },
+  { sym: "ACAD",  name: "ACADIA Pharma",         price: "$16.82",  pct: "-2.15%", up: false },
+  { sym: "PTGX",  name: "Protagonist Therap.",   price: "$54.61",  pct: "+3.45%", up: true  },
+  { sym: "KYMR",  name: "Kymera Therap.",        price: "$39.44",  pct: "+1.88%", up: true  },
 ];
-
-// Fetch previous close at build time — server side, no CORS
-interface TickerItem {
-  sym: string;
-  name: string;
-  price: string;
-  pct: string;
-  up: boolean | null;
-}
-
-const API_KEY = "95XzbYI2nbs2ASsUWoSJglFyMtpGzkSE";
-
-const results: TickerItem[] = await Promise.all(
-  SYMBOLS.map(async ({ sym, name }) => {
-    try {
-      const res  = await fetch(`https://api.polygon.io/v2/aggs/ticker/${sym}/prev?adjusted=true&apiKey=${API_KEY}`);
-      const json = await res.json();
-      const r    = json.results?.[0];
-      if (!r) return { sym, name, price: "—", pct: "—", up: null };
-      const chg = r.c - r.o;
-      const pct = (chg / r.o) * 100;
-      return {
-        sym, name,
-        price: `$${r.c.toFixed(2)}`,
-        pct:   `${pct >= 0 ? "+" : ""}${pct.toFixed(2)}%`,
-        up:    chg >= 0,
-      };
-    } catch {
-      return { sym, name, price: "—", pct: "—", up: null };
-    }
-  })
-);
-
-// Duplicate for seamless loop
-const items = [...results, ...results];
 ---
 
-<div class="ticker-wrap">
-  <div class="ticker-inner">
-    {items.map((t) => (
-      <span class="ticker-item">
-        <span class="ticker-sym">{t.sym}</span>
-        <span class="ticker-name">{t.name}</span>
-        <span class="ticker-price" style={t.up === null ? "" : t.up ? "color:#34e0c4" : "color:#f87171"}>
-          {t.price}
-        </span>
-        <span class="ticker-pct" style={t.up === null ? "" : t.up ? "color:#34e0c4" : "color:#f87171"}>
-          {t.pct}
-        </span>
+<div style="width:100%; overflow:hidden; border-top:1px solid rgba(151,196,214,0.14); border-bottom:1px solid rgba(151,196,214,0.14); background:var(--color-void); padding:10px 0; position:relative;">
+  <div style="position:absolute;top:0;left:0;bottom:0;width:64px;z-index:2;pointer-events:none;background:linear-gradient(to right,var(--color-void),transparent)"></div>
+  <div style="position:absolute;top:0;right:0;bottom:0;width:64px;z-index:2;pointer-events:none;background:linear-gradient(to left,var(--color-void),transparent)"></div>
+  <div class="psa-ticker">
+    {[...tickers, ...tickers].map((t) => (
+      <span style="display:inline-flex;align-items:center;gap:10px;padding:0 24px;border-right:1px solid rgba(151,196,214,0.14);flex-shrink:0;">
+        <span style={`font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)`}>{t.sym}</span>
+        <span style={`font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)`}>{t.name}</span>
+        <span style={`font-family:var(--font-mono);font-size:11px;color:${t.up ? "#34e0c4" : "#f87171"}`}>{t.price}</span>
+        <span style={`font-family:var(--font-mono);font-size:10px;color:${t.up ? "#34e0c4" : "#f87171"}`}>{t.pct}</span>
       </span>
     ))}
   </div>
 </div>
 
 <style>
-  .ticker-wrap {
-    width: 100%;
-    overflow: hidden;
-    border-top: 1px solid rgba(151,196,214,0.14);
-    border-bottom: 1px solid rgba(151,196,214,0.14);
-    background: var(--color-void);
-    padding: 10px 0;
-    position: relative;
-  }
-
-  .ticker-wrap::before,
-  .ticker-wrap::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 64px;
-    z-index: 2;
-    pointer-events: none;
-  }
-  .ticker-wrap::before { left: 0;  background: linear-gradient(to right, var(--color-void), transparent); }
-  .ticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--color-void), transparent); }
-
-  .ticker-inner {
+  .psa-ticker {
     display: inline-flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     white-space: nowrap;
-    animation: scroll 90s linear infinite;
+    animation: psa-scroll 90s linear infinite;
   }
-
-  .ticker-wrap:hover .ticker-inner {
+  div:hover > .psa-ticker {
     animation-play-state: paused;
   }
-
-  .ticker-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 24px;
-    border-right: 1px solid rgba(151,196,214,0.14);
-  }
-
-  .ticker-sym  { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; font-weight: 500; color: var(--color-ink); }
-  .ticker-name { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
-  .ticker-price{ font-family: var(--font-mono); font-size: 11px; color: var(--color-ink-faint); }
-  .ticker-pct  { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
-
-  @keyframes scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+  @keyframes psa-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 </style>

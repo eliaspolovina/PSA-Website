@@ -1,56 +1,130 @@
 ---
-// Static ticker — prices updated manually or via redeploy
-// Replace with live data once layout is confirmed working
-const tickers = [
-  { sym: "REGN",  name: "Regeneron",            price: "$792.14", pct: "+0.55%", up: true  },
-  { sym: "VRTX",  name: "Vertex Pharma",         price: "$461.08", pct: "+0.47%", up: true  },
-  { sym: "MRNA",  name: "Moderna",               price: "$74.52",  pct: "-1.82%", up: false },
-  { sym: "BMRN",  name: "BioMarin",              price: "$68.91",  pct: "+1.23%", up: true  },
-  { sym: "CRSP",  name: "CRISPR Therapeutics",   price: "$41.27",  pct: "+4.11%", up: true  },
-  { sym: "NTLA",  name: "Intellia",              price: "$18.44",  pct: "+5.25%", up: true  },
-  { sym: "BEAM",  name: "Beam Therapeutics",     price: "$22.67",  pct: "+2.49%", up: true  },
-  { sym: "RARE",  name: "Ultragenyx",            price: "$34.19",  pct: "-1.81%", up: false },
-  { sym: "ALNY",  name: "Alnylam",               price: "$248.33", pct: "+1.27%", up: true  },
-  { sym: "IONS",  name: "Ionis Pharma",          price: "$44.76",  pct: "+0.65%", up: true  },
-  { sym: "SRPT",  name: "Sarepta",               price: "$82.05",  pct: "-2.89%", up: false },
-  { sym: "RCKT",  name: "Rocket Pharma",         price: "$7.33",   pct: "+5.93%", up: true  },
-  { sym: "ACAD",  name: "ACADIA Pharma",         price: "$16.82",  pct: "-2.15%", up: false },
-  { sym: "PTGX",  name: "Protagonist Therap.",   price: "$54.61",  pct: "+3.45%", up: true  },
-  { sym: "KYMR",  name: "Kymera Therap.",        price: "$39.44",  pct: "+1.88%", up: true  },
-  { sym: "IOVA",  name: "Iovance Biotherapeutics", price: "$8.21",  pct: "-1.44%", up: false },
-  { sym: "MNPR",  name: "Monopar Therapeutics",    price: "$1.87",  pct: "+2.74%", up: true  },
-  { sym: "REPL",  name: "Replimune",               price: "$6.43",  pct: "+0.94%", up: true  },
+const SYMBOLS = [
+  { sym: "REGN",  name: "Regeneron"             },
+  { sym: "VRTX",  name: "Vertex Pharma"         },
+  { sym: "MRNA",  name: "Moderna"               },
+  { sym: "BMRN",  name: "BioMarin"              },
+  { sym: "CRSP",  name: "CRISPR Therapeutics"   },
+  { sym: "NTLA",  name: "Intellia"              },
+  { sym: "BEAM",  name: "Beam Therapeutics"     },
+  { sym: "RARE",  name: "Ultragenyx"            },
+  { sym: "ALNY",  name: "Alnylam"               },
+  { sym: "IONS",  name: "Ionis Pharma"          },
+  { sym: "SRPT",  name: "Sarepta"               },
+  { sym: "RCKT",  name: "Rocket Pharma"         },
+  { sym: "ACAD",  name: "ACADIA Pharma"         },
+  { sym: "PTGX",  name: "Protagonist Therap."   },
+  { sym: "KYMR",  name: "Kymera Therap."        },
+  { sym: "IOVA",  name: "Iovance Biotherapeutics"},
+  { sym: "MNPR",  name: "Monopar Therapeutics"  },
+  { sym: "REPL",  name: "Replimune"             },
 ];
+const nameMap = JSON.stringify(Object.fromEntries(SYMBOLS.map(s => [s.sym, s.name])));
+const syms = SYMBOLS.map(s => s.sym);
 ---
 
-<div style="width:100%; overflow:hidden; border-top:1px solid rgba(151,196,214,0.14); border-bottom:1px solid rgba(151,196,214,0.14); background:var(--color-void); padding:10px 0; position:relative;">
-  <div style="position:absolute;top:0;left:0;bottom:0;width:64px;z-index:2;pointer-events:none;background:linear-gradient(to right,var(--color-void),transparent)"></div>
-  <div style="position:absolute;top:0;right:0;bottom:0;width:64px;z-index:2;pointer-events:none;background:linear-gradient(to left,var(--color-void),transparent)"></div>
-  <div class="psa-ticker">
-    {[...tickers, ...tickers].map((t) => (
-      <span style="display:inline-flex;align-items:center;gap:10px;padding:0 24px;border-right:1px solid rgba(151,196,214,0.14);flex-shrink:0;">
-        <span style={`font-family:var(--font-mono);font-size:11px;letter-spacing:0.1em;font-weight:500;color:var(--color-ink)`}>{t.sym}</span>
-        <span style={`font-family:var(--font-mono);font-size:10px;color:var(--color-ink-faint)`}>{t.name}</span>
-        <span style={`font-family:var(--font-mono);font-size:11px;color:${t.up ? "#34e0c4" : "#f87171"}`}>{t.price}</span>
-        <span style={`font-family:var(--font-mono);font-size:10px;color:${t.up ? "#34e0c4" : "#f87171"}`}>{t.pct}</span>
+<div class="psa-ticker-wrap" data-names={nameMap}>
+  <!-- fade edges -->
+  <div class="psa-fade-left"></div>
+  <div class="psa-fade-right"></div>
+  <!-- single scrolling track -->
+  <div class="psa-ticker-track" id="psa-ticker-track">
+    {[...SYMBOLS, ...SYMBOLS].map((t) => (
+      <span class="psa-ticker-item">
+        <span class="psa-sym">{t.sym}</span>
+        <span class="psa-name">{t.name}</span>
+        <span class="psa-price">—</span>
+        <span class="psa-pct">—</span>
       </span>
     ))}
   </div>
 </div>
 
 <style>
-  .psa-ticker {
+  .psa-ticker-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-top: 1px solid rgba(151,196,214,0.14);
+    border-bottom: 1px solid rgba(151,196,214,0.14);
+    background: var(--color-void);
+    padding: 9px 0;
+  }
+  .psa-fade-left, .psa-fade-right {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 64px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .psa-fade-left  { left: 0;  background: linear-gradient(to right, var(--color-void), transparent); }
+  .psa-fade-right { right: 0; background: linear-gradient(to left,  var(--color-void), transparent); }
+
+  .psa-ticker-track {
     display: inline-flex;
-    flex-direction: row;
     flex-wrap: nowrap;
     white-space: nowrap;
     animation: psa-scroll 90s linear infinite;
+    will-change: transform;
   }
-  div:hover > .psa-ticker {
+  .psa-ticker-wrap:hover .psa-ticker-track {
     animation-play-state: paused;
   }
+  .psa-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 24px;
+    border-right: 1px solid rgba(151,196,214,0.14);
+    flex-shrink: 0;
+  }
+  .psa-sym   { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; font-weight: 500; color: var(--color-ink); }
+  .psa-name  { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
+  .psa-price { font-family: var(--font-mono); font-size: 11px; color: var(--color-ink-faint); }
+  .psa-pct   { font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-faint); }
+
   @keyframes psa-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
   }
 </style>
+
+<script>
+  (async () => {
+    const wrap  = document.querySelector(".psa-ticker-wrap") as HTMLElement | null;
+    const track = document.getElementById("psa-ticker-track");
+    if (!wrap || !track) return;
+
+    const nameMap = JSON.parse(wrap.dataset.names!) as Record<string, string>;
+    const syms    = Object.keys(nameMap);
+    const green   = "#34e0c4";
+    const red     = "#f87171";
+
+    const update = (tickers: Array<{ sym: string; price: string; pct: string; up: boolean | null }>) => {
+      const dataMap = Object.fromEntries(tickers.map(t => [t.sym, t]));
+      const items   = track!.querySelectorAll(".psa-ticker-item");
+      items.forEach((item, i) => {
+        const sym   = syms[i % syms.length];
+        const d     = dataMap[sym];
+        const col   = !d || d.up === null ? "var(--color-ink-faint)" : d.up ? green : red;
+        const priceEl = item.querySelector(".psa-price") as HTMLElement;
+        const pctEl   = item.querySelector(".psa-pct")   as HTMLElement;
+        if (priceEl) { priceEl.textContent = d?.price ?? "—"; priceEl.style.color = col; }
+        if (pctEl)   { pctEl.textContent   = d?.pct   ?? "—"; pctEl.style.color   = col; }
+      });
+    };
+
+    const load = async () => {
+      try {
+        const res  = await fetch("/api/tickers");
+        const json = await res.json() as { tickers?: Array<{ sym: string; price: string; pct: string; up: boolean | null }> };
+        if (json.tickers?.length) update(json.tickers);
+      } catch (e) {
+        console.warn("Ticker fetch failed:", e);
+      }
+    };
+
+    await load();
+    setInterval(load, 60_000);
+  })();
+</script>
